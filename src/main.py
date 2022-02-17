@@ -198,14 +198,14 @@ def analizar():
             grafica=grafica.strip()
             plt.rcdefaults()
 
-            if grafica == 'barras':
-                if titulo ==None:
-                    pass          
-                if tituloX == None:
-                    pass
-                if tituloY ==None:
-                    pass
+            if titulo ==None or titulo =="":
+                titulo=fecha[0]+ " - " + str(fecha[1])       
+            if tituloX == None or tituloX == "":
+                pass
+            if tituloY ==None or tituloY == "":
+                pass
 
+            if grafica == 'barras':
                 grB, adB = plt.subplots()
                 adB.bar(ejeX, ejeY) # Datos de la grafica
                 adB.set_xlabel(tituloX) #titulos
@@ -225,7 +225,13 @@ def analizar():
                 plt.show()
 
             elif grafica == 'pie' or grafica == 'pastel' or grafica == 'gráfico de pastel' or grafica == 'grafico de pastel':
-                print('grafica pie')
+                grP, adP = plt.subplots()
+                adP.pie(ejeY, labels=ejeX, autopct='%1.1f%%',
+                shadow=True, startangle=90)
+                adP.axis('equal')
+                adP.set_title(titulo)
+                grP.savefig(nombre)
+                plt.show()
             else:
                 print('ERROR: *** Grafica no Disponible ***')
 
