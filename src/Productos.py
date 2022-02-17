@@ -17,6 +17,9 @@ class Producto:
     def getCantidad (self):
         return self.cantidad
     
+    def getTotal(self):
+        return self.total
+    
     def setNombre(self, nombre):
         self.nombre= nombre
     
