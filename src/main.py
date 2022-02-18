@@ -7,6 +7,18 @@ datos=[]
 fecha=[]
 instrucciones=[]
 
+def ordenarProductos():
+    global datos
+    cambio=True    
+    while cambio:
+        cambio=False
+        for i in range(len(datos)-1):
+            if datos[i].getTotal() < datos[i+1].getTotal():
+                aux=datos[i]
+                datos[i]=datos[i+1]
+                datos[i+1]=aux
+                cambio= True
+
 def buscarInstrucciones(nombre):
     global instrucciones
     nombre=nombre.lower()
@@ -237,10 +249,12 @@ def analizar():
                 grP.savefig(nombre)
                 plt.show()
             else:
-                print('ERROR: *** Grafica no Disponible ***')
+                print('ERROR: *** Grafica no Disponible Faltan Datos ***')
 
 #metodo para generar el reporte html
 def generar_reporte ():
+    global datos
+    ordenarProductos()
     try:
         mensaje = '''<!DOCTYPE html>
 <html lang="es">
@@ -253,6 +267,10 @@ def generar_reporte ():
 <body>
     <section>
         <h1>Reporte de Productos</h1>
+        <br>
+        <h3>Producto Mas Vendido:       '''+str(datos[0].getNombre()) +'''</h3>
+        <h3>Producto Menos Vendido:     '''+str(datos[len(datos)-1].getNombre())+''' </h3>
+        <br>
         <div class="tbl-header">
             <table cellpadding="0" cellspacing="0" border="0">
                 <thead>
@@ -267,14 +285,16 @@ def generar_reporte ():
         </div>
         <div class="tbl-content">
             <table cellpadding="0" cellspacing="0" border="0">
-                <tbody>
+                <tbody>'''
+        for d in datos:
+            mensaje=mensaje+''' 
                     <tr>
-                        <td>AAC</td>
-                        <td>AUSTRALIAN COMPANY </td>
-                        <td>$1.38</td>
-                        <td>+2.01</td>
-                    </tr>
-                </tbody>
+                        <td>'''+str(d.getNombre())+'''</td>
+                        <td>'''+str(d.getPrecio())+'''</td>
+                        <td>'''+str(d.getCantidad())+'''</td>
+                        <td>'''+str(d.getTotal())+'''</td>
+                    </tr>'''
+        mensaje=mensaje+'''        </tbody>
             </table>
         </div>
     </section>
