@@ -1,6 +1,7 @@
 from tkinter import filedialog, Tk
 from Productos import Producto
 import matplotlib.pyplot as plt
+import webbrowser
 
 datos=[]
 fecha=[]
@@ -8,6 +9,7 @@ instrucciones=[]
 
 def buscarInstrucciones(nombre):
     global instrucciones
+    nombre=nombre.lower()
     for i in instrucciones:
         if i[0]==nombre:
             return i[1]
@@ -149,14 +151,16 @@ def cargar_instrucciones():
             datos=palabra.split(',')
             for dat in datos:
                 tmp=dat.split(':')
+                tmp[0]=tmp[0].lower()
                 a=""
                 for ch in tmp[1].strip():
                     if ord(ch)==34:
                         pass
                     else:
                         a=a+ch
-                tmp[1]=a
+                tmp[1]=a.lower()
                 instrucciones.append(tmp)
+            
             print('*** Archivos Cargados ***')
         else: 
             print ('ERROR: *** archivo vacio ***')  # validacion para un archivo vacio
@@ -237,7 +241,54 @@ def analizar():
 
 #metodo para generar el reporte html
 def generar_reporte ():
-    pass
+    try:
+        mensaje = '''<!DOCTYPE html>
+<html lang="es">
+<head>
+    <title>Reporte</title>
+    <meta http-equiv=Content-Type content=text/html; charset=UTF-8>
+    <link href="src/style.css" rel="stylesheet" type="text/css">
+    <script src="src/script.js"></script>
+</head>
+<body>
+    <section>
+        <h1>Reporte de Productos</h1>
+        <div class="tbl-header">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Precio</th>
+                        <th>Cantidad</th>
+                        <th>total</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="tbl-content">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tbody>
+                    <tr>
+                        <td>AAC</td>
+                        <td>AUSTRALIAN COMPANY </td>
+                        <td>$1.38</td>
+                        <td>+2.01</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <div class="made-with-love">
+        Abner Martín Noj Hernández - 201801027
+</body>
+</html>'''
+        f = open('index.html','w', encoding="utf-8")
+        f.write(mensaje)
+        f.close()
+    except:
+        print('ERROR: *** Error al crear el reporte ***')
+    else:
+        print('*** Archivo Creado ***')
 
 #metodo de la logica princial del programa
 def menu ():
@@ -261,7 +312,7 @@ def menu ():
             elif seleccion == 3:
                 analizar()
             elif seleccion == 4:
-                print('opcion ' +str(seleccion))
+                generar_reporte()
             elif seleccion == 5:
                 print ("*** Adios ***")
             else:
@@ -273,5 +324,3 @@ def menu ():
 #main
 if __name__=='__main__':
     menu()
-    #cargar_archivo()
-    #cargar_instrucciones()
