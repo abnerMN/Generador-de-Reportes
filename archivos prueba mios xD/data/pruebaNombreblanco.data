@@ -1,6 +1,20 @@
-JuNiO : 2020 = (
-["producto 1",25.55,33];
-["producto 2",35.75,10];
+Enero : 2021 = (
+["producto a",25.55,33];
+["producto a",5.75,10];
 [,15,170];
-["producto 4",50,13];
+["producto c",3,13];
+["producto d",90,19];
+["producto e",27,20];
+["producto f",26,125];
+["producto g",28,32;
+["producto h",29,12];
+["producto i",20,11];
+["producto j",30,32];
+["producto k",32,12];
+["producto l",33,2];
+["producto m", 54,14];
+["producto n",23,43];
+["producto o",53,12];
+["producto p",42, 11];
+["producto q",22,21];
 )

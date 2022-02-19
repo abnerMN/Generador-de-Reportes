@@ -1,12 +1,14 @@
 from tkinter import filedialog, Tk
 from Productos import Producto
 import matplotlib.pyplot as plt
+from PIL import Image
 import webbrowser
 
 datos=[]
 fecha=[]
 instrucciones=[]
 
+#metodos para ordenar  el listado de productos
 def ordenarProductos():
     global datos
     cambio=True    
@@ -19,15 +21,21 @@ def ordenarProductos():
                 datos[i+1]=aux
                 cambio= True
 
+#metodo para obtener los valores de las instrucciones
 def buscarInstrucciones(nombre):
     global instrucciones
+    respuesta=""
     nombre=nombre.lower()
     for i in instrucciones:
         if i[0]==nombre:
-            return i[1]
+            respuesta= i[1]
         else:
             pass
-    return None
+    
+    if respuesta=="":
+        return None
+    else:
+        return respuesta
 
 #funcion para obtener los archivos por una ventana emergente
 #tiene como parametro la extension del archivo
@@ -67,18 +75,21 @@ def validacionFecha(arg):
         fecha.append(arg[0])
     else:        
         print('ERROR: *** Ingrese un mes valido ***')
-    
+        print('       *** por favor ingrese un nuevo archivo ***')
     if bandera:
         try:
             año=int(arg[1])
         except:
             print('ERROR: *** el año tiene que ser un numero ***')
+            print('       *** por favor ingrese un nuevo archivo ***')
+
         else:
             if año >0:
                 fecha.append(año)
                 return fecha
             else:
                 print('ERROR: *** El año tiene que ser un numero entero positivo ***')
+                print('       *** por favor ingrese un nuevo archivo ***')
     else:
         return fecha
 
@@ -120,6 +131,7 @@ def cargar_archivo():
                         precio=float(pr)
                     except:
                         print("ERROR: *** el precio tiene que ser un numero ***")
+                        print('       *** por favor ingrese un nuevo archivo ***')
                     else:     
                         contador=contador+1
                 else:
@@ -128,6 +140,7 @@ def cargar_archivo():
                         cantidad=float(ca)
                     except:
                         print("ERROR: *** La cantidad tiene que ser un numero ***")
+                        print('       *** por favor ingrese un nuevo archivo ***')
                     else:     
                         contador=contador+1
                         nombre= nombre.lower()
@@ -144,6 +157,7 @@ def cargar_archivo():
       #          p.impresion_datos()
         else: 
             print ('ERROR: *** archivo vacio ***')  # validacion para un archivo vacio
+            print('        *** por favor ingrese un nuevo archivo ***')
     else:
         print('ERROR: *** No se ha seleccionado ningun archivo ***')
     
@@ -176,6 +190,7 @@ def cargar_instrucciones():
             print('*** Archivos Cargados ***')
         else: 
             print ('ERROR: *** archivo vacio ***')  # validacion para un archivo vacio
+            print('        *** por favor ingrese un nuevo archivo ***')
     else:
         print('ERROR: *** No se ha seleccionado ningun archivo ***')
 
@@ -184,12 +199,12 @@ def analizar():
     global datos
     global fecha
     global instrucciones
-
     if len(datos)==0 or len(fecha)==0 or len(instrucciones)==0:
         if len(datos)==0:
             print('ERROR: *** No se ha cargado el archivo de productos ***')
         if len(fecha)==0:
-            print('ERROR: *** Los datos de la fecha no estan cargados ***')
+            print('ERROR: *** Los datos de la fecha del archivo productos son erroneos***')
+            print('       *** por favor ingrese un nuevo archivo ***')
         if len(instrucciones)==0:
             print('ERROR: *** No se ha cargado el archivo de instrucciones ***')
     else:
@@ -203,6 +218,7 @@ def analizar():
 
         if nombre == None or grafica == None:
             print('ERROR: *** Falta el nombre o el tipo de graica ***')
+            print('       *** por favor ingrese un nuevo archivo ***')
         else:
             ejeX=[]
             ejeY=[] 
@@ -229,7 +245,13 @@ def analizar():
                 adB.grid(axis='y', color='lightgray', linestyle='dashed')
                 adB.set_title(titulo)
                 grB.savefig(nombre)
-                plt.show()
+                try:
+                    img= Image.open(nombre+'.png')
+                except: 
+                    print('ERROR: *** Hubo un problema al intentar abrir la imagen ***')
+                else:
+                    img.show()
+
             elif grafica =='líneas' or grafica =='lineas':
                 grL, adL = plt.subplots()
                 adL.plot(ejeX, ejeY)
@@ -238,7 +260,13 @@ def analizar():
                 adL.grid(axis='y', color='darkgray', linestyle='dashed')
                 adL.set_title(titulo)
                 grL.savefig(nombre)
-                plt.show()
+                try:
+                    img= Image.open(nombre+'.png')
+                except: 
+                    print('ERROR: *** Hubo un problema al intentar abrir la imagen ***')
+                else:
+                    img.show()
+                    
 
             elif grafica == 'pie' or grafica == 'pastel' or grafica == 'gráfico de pastel' or grafica == 'grafico de pastel':
                 grP, adP = plt.subplots()
@@ -247,9 +275,16 @@ def analizar():
                 adP.axis('equal')
                 adP.set_title(titulo)
                 grP.savefig(nombre)
-                plt.show()
+                try:
+                    img= Image.open(nombre+'.png')
+                except: 
+                    print('ERROR: *** Hubo un problema al intentar abrir la imagen ***')
+                else:
+                    img.show()
+                    
             else:
                 print('ERROR: *** Grafica no Disponible Faltan Datos ***')
+                print('       *** por favor ingrese un nuevo archivo ***')
 
 #metodo para generar el reporte html
 def generar_reporte ():
@@ -261,8 +296,8 @@ def generar_reporte ():
 <head>
     <title>Reporte</title>
     <meta http-equiv=Content-Type content=text/html; charset=UTF-8>
-    <link href="src/style.css" rel="stylesheet" type="text/css">
-    <script src="src/script.js"></script>
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <script src="script.js"></script>
 </head>
 <body>
     <section>
@@ -309,12 +344,14 @@ def generar_reporte ():
         print('ERROR: *** Error al crear el reporte ***')
     else:
         print('*** Archivo Creado ***')
-
+        webbrowser.open('index.html')
 #metodo de la logica princial del programa
 def menu ():
     seleccion= 0
     while (seleccion !=5):
 
+        print ('\n**************************')
+        print ('\n          Menu')
         print ('\n**************************')
         print('1. Cargar Data')
         print('2. Cargar Instrucciones')
